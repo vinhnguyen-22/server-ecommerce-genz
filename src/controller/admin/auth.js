@@ -1,5 +1,7 @@
 const User = require("../../models/user");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
+const shortid = require("shortid");
 
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec((error, user) => {
@@ -7,29 +9,37 @@ exports.signup = (req, res) => {
       return res.status(400).json({
         message: "Admin already registered",
       });
-
-    const { firstName, lastName, email, password } = req.body;
-    const _user = new User({
-      firstName,
-      lastName,
-      email,
-      password,
-      username: Math.random().toString(),
-      role: "admin",
-    });
-
-    _user.save((error, data) => {
-      if (error) {
-        return res.status(400).json({
-          message: "Something went wrong",
-        });
+    User.estimatedDocumentCount(async (err, count) => {
+      if (err) return res.status(400).json({ error });
+      let role = "admin";
+      if (count === 0) {
+        role = "super-admin";
       }
 
-      if (data) {
-        return res.status(201).json({
-          message: "Admin created Successfully..!",
-        });
-      }
+      const { firstName, lastName, email, password } = req.body;
+      const hash_password = await bcrypt.hash(password, 10);
+      const _user = new User({
+        firstName,
+        lastName,
+        email,
+        hash_password,
+        username: shortid.generate(),
+        role,
+      });
+
+      _user.save((error, data) => {
+        if (error) {
+          return res.status(400).json({
+            message: "Something went wrong",
+          });
+        }
+
+        if (data) {
+          return res.status(201).json({
+            message: "Admin created Successfully..!",
+          });
+        }
+      });
     });
   });
 };

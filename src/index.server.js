@@ -4,6 +4,7 @@ const app = express();
 const db = require("./config/db/index");
 
 const path = require("path");
+const cors = require("cors");
 
 //todo routes
 const authRoutes = require("./routes/auth");
@@ -16,6 +17,7 @@ const cartRoutes = require("./routes/cart");
 db.connect();
 
 //handle MIDDLEWARE
+app.use(cors());
 app.use(express.json());
 app.use("/public", express.static(path.join(__dirname, "uploads")));
 
