@@ -130,3 +130,6 @@ Type:
 > <code>query.findOneAndUpdate(conditions, update) </code> // returns Query
 
 <strong>ref</strong>[https://mongoosejs.com/docs/api.html#query_Query-findOneAndUpdate]
+
+##HANDLE WITH COOKIES IN JS
+<strong>ref</strong>[https://www.w3schools.com/js/js_cookies.asp]
