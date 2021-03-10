@@ -28,7 +28,7 @@ exports.initialData = async (req, res) => {
   // handle  nested category in product
   const products = await Product.find({})
     .select("_id name price quantity slug description productPictures category")
-    .populate("category")
+    .populate({ path: "category", select: "_id name" })
     .exec();
 
   res.status(200).json({
