@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const jwt = require("jsonwebtoken");
+const shortid = require("shortid");
 
 exports.signup = (req, res) => {
   User.findOne({ email: req.body.email }).exec(async (errodr, user) => {
@@ -15,7 +16,7 @@ exports.signup = (req, res) => {
       lastName,
       email,
       hash_password,
-      username: Math.random().toString(),
+      username: shortid.generate(),
     });
 
     _user.save((error, data) => {
@@ -41,7 +42,7 @@ exports.signin = (req, res) => {
           { _id: user._id, role: user.role },
           process.env.JWT_SECRET,
           {
-            expiresIn: "1h",
+            expiresIn: "1d",
           }
         );
         const { _id, firstName, lastName, email, role, fullName } = user;
