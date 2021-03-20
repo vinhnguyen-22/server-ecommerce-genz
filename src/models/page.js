@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const pageSchema = new mongoose.Schema(
   {
     title: {
@@ -14,35 +13,29 @@ const pageSchema = new mongoose.Schema(
     },
     banners: [
       {
-        img: {
-          type: String,
-        },
-        navigateTo: {
-          type: String,
-        },
+        img: { type: String },
+        navigateTo: { type: String },
       },
     ],
     products: [
       {
-        img: {
-          type: String,
-        },
-        navigateTo: {
-          type: String,
-        },
+        img: { type: String },
+        navigateTo: { type: String },
       },
     ],
     category: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
+      unique: true,
     },
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
+      required: false,
     },
   },
   { timestamps: true }
 );
+
 module.exports = mongoose.model("Page", pageSchema);
