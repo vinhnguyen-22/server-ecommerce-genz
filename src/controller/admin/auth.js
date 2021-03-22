@@ -9,6 +9,7 @@ exports.signup = (req, res) => {
       return res.status(400).json({
         message: "Admin already registered",
       });
+
     User.estimatedDocumentCount(async (err, count) => {
       if (err) return res.status(400).json({ error });
       let role = "admin";
