@@ -37,7 +37,7 @@ const addressSchema = new mongoose.Schema({
     max: 100,
   },
 
-  cityDistricTown: {
+  cityDistrictTown: {
     type: String,
     required: true,
     trim: true,
