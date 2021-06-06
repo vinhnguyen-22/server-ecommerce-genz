@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+// A
 const orderSchema = new mongoose.Schema(
   {
     user: {
@@ -13,6 +13,7 @@ const orderSchema = new mongoose.Schema(
       ref: "UserAddress.address",
       required: true,
     },
+
     totalAmount: {
       type: Number,
       required: true,
@@ -24,12 +25,10 @@ const orderSchema = new mongoose.Schema(
           type: mongoose.Schema.Types.ObjectId,
           ref: "Product",
         },
-
         payablePrice: {
           type: Number,
           required: true,
         },
-
         purchasedQty: {
           type: Number,
           required: true,
@@ -42,6 +41,29 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "completed", "cancelled", "refund"],
       required: true,
     },
+
+    paymentType: {
+      type: String,
+      enum: ["cod", "card"],
+      required: true,
+    },
+
+    orderStatus: [
+      {
+        type: {
+          type: String,
+          enum: ["ordered", "packed", "shipped", "delivered"],
+          default: "ordered",
+        },
+        date: {
+          type: Date,
+        },
+        isCompleted: {
+          type: Boolean,
+          default: false,
+        },
+      },
+    ],
   },
   { timestamps: true }
 );

@@ -39,14 +39,18 @@ exports.getProductsBySlug = (req, res) => {
   Category.findOne({
     slug: slug,
   })
-    .select("_id")
+    .select("_id type")
     .exec((error, category) => {
+      if (error) {
+        return res.status(400).json({ error });
+      }
       if (category) {
         Product.find({ category: category._id }).exec((error, products) => {
-          if (category) {
-            if (error) {
-              return res.status(400).json({ error });
-            }
+          if (error) {
+            return res.status(400).json({ error });
+          }
+
+          if (category.type) {
             if (products.length > 0) {
               res.status(200).json({
                 products,
@@ -71,6 +75,8 @@ exports.getProductsBySlug = (req, res) => {
                 },
               });
             }
+          } else {
+            res.status(200).json({ products });
           }
         });
       }
@@ -87,5 +93,7 @@ exports.getProductDetailsById = (req, res) => {
         res.status(200).json({ product });
       }
     });
+  } else {
+    return res.status(400).json({ error: "Params required" });
   }
 };
