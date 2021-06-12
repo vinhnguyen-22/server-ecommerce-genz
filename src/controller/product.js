@@ -54,6 +54,15 @@ exports.getProductsBySlug = (req, res) => {
             if (products.length > 0) {
               res.status(200).json({
                 products,
+                priceRange: {
+                  under50$: 50,
+                  under100$: 100,
+                  under200$: 200,
+                  under300$: 300,
+                  under400$: 400,
+                  under500$: 500,
+                  above: 500,
+                },
                 productsByPrice: {
                   under50$: products.filter((product) => product.price < 50),
                   under100$: products.filter(
@@ -96,4 +105,27 @@ exports.getProductDetailsById = (req, res) => {
   } else {
     return res.status(400).json({ error: "Params required" });
   }
+};
+
+exports.deleteProductById = (req, res) => {
+  const { productId } = req.body.payload;
+  if (productId) {
+    Product.deleteOne({ _id: productId }).exec((error, result) => {
+      if (error) return res.status(400).json({ error });
+      if (result) {
+        res.status(202).json({ result });
+      }
+    });
+  } else {
+    res.status(400).json({ error: "Params required" });
+  }
+};
+
+exports.getProducts = async (req, res) => {
+  const products = await Product.find({ createdBy: req.user._id })
+    .select("_id name price quantity slug description productPictures category")
+    .populate({ path: "category", select: "_id name" })
+    .exec();
+
+  res.status(200).json({ products });
 };

@@ -38,11 +38,6 @@ exports.addItemToCart = (req, res) => {
           };
         }
         promiseArray.push(runUpdate(condition, update));
-
-        // Cart.findOneAndUpdate(condition, action).exec((err, _cart) => {
-        //   if (err) res.status(400).json({ err });
-        //   if (_cart) res.status(201).json({ cart: _cart });
-        // });
       });
       Promise.all(promiseArray)
         .then((response) => res.status(201).json({ response }))
@@ -84,4 +79,28 @@ exports.getCartItems = (req, res) => {
         res.status(200).json({ cartItems });
       }
     });
+};
+// 202 Accepted response status code indicates that the request has been accepted for processing,
+//but the processing has not been completed; in fact, processing may not have started yet.
+//The request might or might not eventually be acted upon, as it might be disallowed when processing actually takes place.
+exports.removeCartItems = (req, res) => {
+  const { productId } = req.body.payload;
+  console.log({ productId });
+  if (productId) {
+    Cart.update(
+      { user: req.user._id },
+      {
+        $pull: {
+          cartItems: {
+            product: productId,
+          },
+        },
+      }
+    ).exec((error, result) => {
+      if (error) return res.status(400).json({ error });
+      if (result) {
+        res.status(202).json({ result });
+      }
+    });
+  }
 };
